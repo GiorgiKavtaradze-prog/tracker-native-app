@@ -30,6 +30,7 @@
 - [📜 Available Scripts](#available-scripts)
 - [🧪 Verification \& Code Quality](#verification--code-quality)
 - [📄 Licensing \& Terms](#licensing--terms)
+- [📚 Related Documentation](#related-documentation)
 - [🙏 Acknowledgements](#acknowledgements)
 
 ---
@@ -194,6 +195,11 @@ ai-workout-tracker/
 │   ├── hooks/                 # Custom React hooks (timers, debounce, etc.)
 │   ├── lib/                   # Utility libraries (auth client, formatting, Zod schemas)
 │   └── theme/                 # Design system tokens & color palettes
+├── AGENTS.md                   # AI-agent operating guide & mandatory Expo SDK 57 rules
+├── CLAUDE.md                   # Claude Code onboarding brief
+├── EAS.md                      # Build / submit / OTA deployment playbook
+├── LICENSE.md                  # Terms of use & commercial licensing
+├── README.md                   # This documentation
 ├── app.json                   # Expo config (typed routes, experimental features)
 ├── babel.config.js            # Babel preset for Expo & NativeWind
 ├── drizzle.config.ts          # Drizzle CLI configuration
@@ -209,15 +215,23 @@ ai-workout-tracker/
 
 All backend functionality is hosted directly within the Expo app via `src/app/api/*+api.ts` handlers:
 
-| Endpoint                           |    Method    | Description                                                     |
-| :--------------------------------- | :----------: | :-------------------------------------------------------------- |
-| `/api/auth/*`                      | `GET / POST` | Better Auth handlers (signup, login, OAuth, session management) |
-| `/api/exercises`                   |    `GET`     | Fetch & filter full exercise catalog                            |
-| `/api/exercises/[id]`              |    `GET`     | Get exercise details by ID                                      |
-| `/api/exercises/[id]/instructions` |    `POST`    | Generate real-time AI exercise execution guide & safety tips    |
-| `/api/workouts`                    | `GET / POST` | List user workout routines / Create new workout template        |
-| `/api/workout-sessions`            | `GET / POST` | Retrieve training history / Log completed workout session       |
-| `/api/home-stats`                  |    `GET`     | Compute daily workout statistics, volume, and active streak     |
+| Endpoint                           |    Method    | Description                                                                   |
+| :--------------------------------- | :----------: | :---------------------------------------------------------------------------- |
+| `/api/auth/*`                      | `GET / POST` | Better Auth handlers (sign-up, login, OAuth, session management)              |
+| `/api/exercises`                   |    `GET`     | Fetch & filter the full exercise catalog                                      |
+| `/api/exercises/[id]`              |    `GET`     | Fetch a single exercise's details (muscles, image, metadata)                  |
+| `/api/exercises/[id]/instructions` |    `GET`     | Stream real-time AI form cues, safety checks & execution guidance             |
+| `/api/workouts`                    | `GET / POST` | List user workout routines / create a new workout template                    |
+| `/api/workouts/[id]`               |    `GET`     | Fetch a routine bundled with its ordered exercise list                        |
+| `/api/workout-sessions`            | `GET / POST` | Retrieve training history / log a completed workout session                   |
+| `/api/workout-sessions/[id]`       |    `GET`     | Fetch one session with per-exercise sets, volume & exercise breakdown         |
+| `/api/workout-sessions/calendar`   |    `GET`     | Get ISO workout dates inside a `start`–`end` range (max 22 days)              |
+| `/api/workout-sessions/streak`     |    `GET`     | Return every training date to derive the active & best streak                 |
+| `/api/home-stats`                  |    `GET`     | Compute daily workout count, total & average time from a `start`–`end` window |
+
+> [!NOTE]
+> Every handler follows a consistent contract: **Better Auth** session guard (`401`), **Zod** body/query
+> validation (`400`), **Drizzle ORM** persistence, and a typed JSON response (`200`/`201`, `404` when missing).
 
 ---
 
@@ -579,18 +593,19 @@ npx expo-doctor
 
 The project ships with a focused set of `npm` scripts to cover the full development, database, and verification workflow.
 
-| Script                | Implementation             | Description                                    |
-| :-------------------- | :------------------------- | :--------------------------------------------- |
-| `npm run start`       | `expo start`               | Launch the Expo dev server                     |
-| `npm run android`     | `expo run:android`         | Build & run the native Android app             |
-| `npm run ios`         | `expo run:ios`             | Build & run the native iOS app                 |
-| `npm run web`         | `expo start --web`         | Launch the Web target                          |
-| `npm run lint`        | `expo lint`                | Run ESLint & Expo static analysis              |
-| `npm run db:generate` | `drizzle-kit generate`     | Generate SQL migrations from schema changes    |
-| `npm run db:migrate`  | `drizzle-kit migrate`      | Apply pending SQL migrations                   |
-| `npm run db:push`     | `drizzle-kit push`         | Push schema directly to the DB (dev iteration) |
-| `npm run db:seed`     | `tsx src/db/seed/index.ts` | Seed the default exercise catalog              |
-| `npm run db:studio`   | `drizzle-kit studio`       | Open the Drizzle Studio visual browser         |
+| Script                  | Implementation                    | Description                                    |
+| :---------------------- | :-------------------------------- | :--------------------------------------------- |
+| `npm run start`         | `expo start`                      | Launch the Expo dev server                     |
+| `npm run android`       | `expo run:android`                | Build & run the native Android app             |
+| `npm run ios`           | `expo run:ios`                    | Build & run the native iOS app                 |
+| `npm run reset-project` | `node ./scripts/reset-project.js` | Reset the Expo template scaffold               |
+| `npm run web`           | `expo start --web`                | Launch the Web target                          |
+| `npm run lint`          | `expo lint`                       | Run ESLint & Expo static analysis              |
+| `npm run db:generate`   | `drizzle-kit generate`            | Generate SQL migrations from schema changes    |
+| `npm run db:migrate`    | `drizzle-kit migrate`             | Apply pending SQL migrations                   |
+| `npm run db:push`       | `drizzle-kit push`                | Push schema directly to the DB (dev iteration) |
+| `npm run db:seed`       | `tsx src/db/seed/index.ts`        | Seed the default exercise catalog              |
+| `npm run db:studio`     | `drizzle-kit studio`              | Open the Drizzle Studio visual browser         |
 
 > [!NOTE]
 > Run `npx tsc --noEmit` / `npx expo-doctor` ad-hoc for strict type-checking and Expo SDK 57 project health validation.
@@ -603,6 +618,17 @@ This project is licensed under the terms of the **Techwithemma License**. See [L
 
 - **Allowed**: Personal learning, research, educational study, and non-commercial portfolio demonstrations.
 - **Restricted**: Commercial use, SaaS deployment, client deliverables, paid educational products, or redistribution require an explicit commercial license.
+
+---
+
+## 📚 Related Documentation
+
+| File                         | Purpose                                                                     |
+| :--------------------------- | :-------------------------------------------------------------------------- |
+| [`AGENTS.md`](./AGENTS.md)   | Operating guide for AI agents — conventions & mandatory Expo SDK 57 rules   |
+| [`CLAUDE.md`](./CLAUDE.md)   | Claude Code onboarding brief                                                |
+| [`EAS.md`](./EAS.md)         | Full build, device registration, store submission & OTA deployment playbook |
+| [`LICENSE.md`](./LICENSE.md) | Techwithemma License — terms of use & commercial licensing details          |
 
 ---
 

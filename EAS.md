@@ -138,36 +138,25 @@ Before building native artifacts with EAS, ensure the following requirements are
 The `eas.json` file defines build parameters, environment scopes, and submission parameters across `development`, `preview`, and `production` profiles.
 
 ```jsonc
+// The committed eas.json — shown here with explanatory comments.
 {
   "cli": {
-    "version": ">= 10.0.0",
-    "promptToAutoIncrement": true,
+    "version": ">= 22.0.0", // Minimum EAS CLI version enforced by Expo
+    "appVersionSource": "remote", // App version & build number resolved on EAS (CI-friendly)
   },
   "build": {
     "development": {
-      "developmentClient": true,
+      "developmentClient": true, // Compiles an Expo Dev Client (debugging + hot reload)
       "distribution": "internal",
-      "android": {
-        "buildType": "apk",
-      },
-      "ios": {
-        "simulator": true,
-      },
     },
     "preview": {
       "distribution": "internal",
       "android": {
-        "buildType": "apk",
-      },
-      "ios": {
-        "simulator": false,
+        "buildType": "apk", // Directly installable APK for testers
       },
     },
     "production": {
-      "autoIncrement": true,
-      "android": {
-        "buildType": "app-bundle",
-      },
+      "autoIncrement": true, // Unique store build number on every release
     },
   },
   "submit": {
@@ -180,9 +169,20 @@ The `eas.json` file defines build parameters, environment scopes, and submission
 
 > [!NOTE]
 >
-> - **`development`**: Compiles an internal dev client package containing debugging tools and hot-reloading support.
-> - **`preview`**: Produces a standalone, installable build without dev tools attached. Ideal for QA, client demos, and real device testing.
-> - **`production`**: Produces optimized App Store bundles (`.aab` for Google Play, `.ipa` for Apple App Store Connect) with automated build number incrementation.
+> - **`development`** — Compiles an internal **Expo Dev Client** (via `developmentClient: true`) with the native debugger and hot-reload support. Perfect for daily native development.
+> - **`preview`** — Produces a standalone, installable build **without** debug tooling attached. The `android.buildType: "apk"` yields a directly distributable APK, ideal for QA and client demos.
+> - **`production`** — Compiles optimized store-ready artifacts (`.aab` for Google Play, `.ipa` for App Store Connect) with `autoIncrement: true` so every release gets a unique build number.
+
+### Key Fields at a Glance
+
+| Field                                 | Meaning                                                                                                  |
+| :------------------------------------ | :------------------------------------------------------------------------------------------------------- |
+| `cli.version`                         | Minimum EAS CLI required to run builds — the repo pins `>= 22.0.0`.                                      |
+| `cli.appVersionSource`                | With `"remote"`, EAS manages app version/build numbers centrally — best for CI-driven release pipelines. |
+| `build.*.distribution`                | `internal` keeps builds private to your Expo team; use `external` only for public/beta channels.         |
+| `build.development.developmentClient` | When `true`, the build includes the Dev Launcher and debugging surface.                                  |
+| `build.preview.android.buildType`     | `"apk"` produces an installable APK; use `"app-bundle"` for Play Store AAB artifacts.                    |
+| `build.production.autoIncrement`      | EAS automatically increments the build number on each new production build.                              |
 
 ---
 
@@ -208,9 +208,13 @@ The `eas.json` file defines build parameters, environment scopes, and submission
 
 EAS compiles your native binaries on managed cloud servers (macOS for iOS, Linux for Android), eliminating the need for local Xcode or Android Studio installations.
 
+> [!TIP]
+> If a build fails due to stale caches or lingering artifacts, rerun it with `--clear-cache`:
+> `eas build --profile preview --platform android --clear-cache`
+
 ### 1. Development Client Builds
 
-Build a custom development client to test native native modules locally:
+Build a custom development client to test **native** modules locally:
 
 ```bash
 # Android Development APK
@@ -280,38 +284,80 @@ eas submit --platform ios
 ```
 
 > [!TIP]
-> **First-Time Configuration:** During initial execution, `eas submit` will prompt you to link your Google Play Service Account JSON key or Apple App Store Connect API credentials.
+> **First-Time Configuration:** During initial execution, `eas submit` prompts you to link your **Google Play Service Account JSON** key or **Apple App Store Connect API key**. Keep these credentials in a secret manager / CI secret — never commit them.
+
+### Release Checklist
+
+Before pushing a submission to the stores:
+
+- [ ] `npm run lint` and `npx tsc --noEmit` pass cleanly.
+- [ ] Production builds succeed for both platforms (`eas build --profile production --platform all`).
+- [ ] Store metadata (privacy, screenshots, data safety) is compliant with platform policies.
+- [ ] Versioning is deterministic: `autoIncrement: true` + `appVersionSource: "remote"`.
+- [ ] The iOS build is validated in **TestFlight** before any App Store public rollout.
 
 ---
 
 ## 🔄 OTA Updates (EAS Update)
 
-Publish instant JS bundle and asset updates over-the-air without requiring full App Store binary rebuilds:
+Publish instantaneous JS bundle and asset updates over-the-air — no full App Store rebuild or review cycle needed.
+
+- ✅ **Use for**: JS-only bugfixes, new screens, assets, and dependency-level tweaks.
+- ❌ **Not for**: native code changes, new native modules, or SDK upgrades — those require a full rebuild.
 
 ```bash
-# Install EAS Update library
+# Install the EAS Update library (one time only)
 npx expo install expo-updates
 
-# Publish update to preview channel
+# One-time configuration (writes updates.url and syncs channels)
+eas update:configure
+
+# Publish an update to the preview channel (dev / QA testers)
 eas update --channel preview --message "Bugfix: Workout session timer state"
 
-# Publish update to production channel
-eas update --channel production --message "Release: AI coach instruction enhancement"
+# Publish an update to the production channel (all store users)
+eas update --channel production --message "Release: AI workout instructions enhancement"
+
+# Staged rollout — gradually ship to 20% of users (range 0.0 – 1.0)
+eas update --channel production --percent 0.2 --message "Staged rollout: session analytics"
 ```
+
+> [!NOTE]
+> The `--channel` flag must match the channel baked into the app release (`app.json` → `updates.channel`). Running `eas update:configure` and rebuilding keeps them in sync automatically.
 
 ---
 
 ## 💡 Troubleshooting & Best Practices
 
+### 🔐 Environment Secrets Management
+
 > [!WARNING]
-> **Never Commit Secrets:** Store production API credentials, database strings, and secret keys in **EAS Secrets** instead of committing `.env` files:
->
-> ```bash
-> eas secret:create --name DATABASE_URL --value "postgresql://..." --type string
-> ```
+> **Never commit secrets.** Production API credentials, database connection strings, signing keys, and third-party tokens belong in **EAS Secrets** — never in a committed `.env` file.
+
+```bash
+# Create / update a secret (injected into every cloud build & update)
+eas secret:create --name DATABASE_URL --value "postgresql://..." --type string
+
+# List configured secrets
+eas secret:list
+
+# Delete a secret
+eas secret:delete --name DATABASE_URL
+```
+
+> [!IMPORTANT]
+> Variables prefixed with `EXPO_PUBLIC_*` (e.g. `EXPO_PUBLIC_API_URL`) are **inlined into the JS bundle at build time** and visible to end users — never put private keys behind a `PUBLIC_` prefix.
 
 ### Common Solutions
 
-- **Build Failure: Out of Memory / Timeout**: Ensure native assets are optimized and dependencies match Expo SDK 57 requirements (`npx expo install --check`).
-- **iOS Install Failures**: Verify the test iPhone's UDID is listed in `eas device:list` and the Developer Profile is trusted in **Settings → General → VPN & Device Management**.
-- **Android APK Build Options**: Ensure `"buildType": "apk"` is set under the `preview` profile in `eas.json` if you desire direct APK file generation.
+| Problem                          | Quick Fix                                                                                              |
+| :------------------------------- | :----------------------------------------------------------------------------------------------------- |
+| Build Out-of-Memory / Timeout    | Optimize assets and remove unused packages; verify parity with `npx expo install --check`.             |
+| Stale-cache build failures       | Rerun with `--clear-cache` (e.g. `eas build --profile preview --platform android --clear-cache`).      |
+| iOS install failure              | Confirm UDID via `eas device:list`; trust profile at **Settings → General → VPN & Device Management**. |
+| Direct APK distribution          | Use the `preview` profile — `buildType: "apk"` is pre-enabled in `eas.json`.                           |
+| Store rejects a duplicate binary | Keep `autoIncrement: true` with `appVersionSource: "remote"`.                                          |
+| Unexpected CLI behavior          | Run `eas diagnostics` to hand Expo Support reproducible logs.                                          |
+
+> [!TIP]
+> Tag every build with `eas build --message "..."` and audit history with `eas build:list` for full traceability.
