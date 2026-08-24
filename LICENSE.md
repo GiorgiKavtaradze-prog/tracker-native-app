@@ -4,6 +4,20 @@
 
 This license agreement governs the use, copying, modification, distribution, and commercial licensing of the **AI Workout Tracker** software and its associated documentation (collectively, the "Software").
 
+| Property            | Value                                                                                                   |
+| :------------------ | :------------------------------------------------------------------------------------------------------ |
+| **License Name**    | Techwithemma License                                                                                    |
+| **Version**         | 1.0                                                                                                     |
+| **Effective Date**  | 24 August 2026                                                                                          |
+| **Copyright Owner** | Giorgi Kavtaradze                                                                                       |
+| **Applies To**      | AI Workout Tracker (source code, binaries, documentation)                                               |
+| **Repository**      | [GiorgiKavtaradze-prog/tracker-native-app](https://github.com/GiorgiKavtaradze-prog/tracker-native-app) |
+
+> [!WARNING]
+> This is **not an open-source license**. Free use is limited to personal learning, portfolio
+> display, and local non-commercial experimentation (see § 1.1). Any commercial use requires a
+> paid **Commercial License** (see § 4).
+
 ---
 
 ## 📌 Summary Matrix
@@ -17,6 +31,23 @@ This license agreement governs the use, copying, modification, distribution, and
 | **Client / Paid Agency Work**        |           ❌ **NO**           | Requires a paid Commercial License                       |
 | **Paid Courses & Monetized Content** |           ❌ **NO**           | Requires a paid Commercial License                       |
 | **Redistribution & Reselling**       |           ❌ **NO**           | Strictly prohibited without authorization                |
+
+---
+
+## 📑 Table of Contents
+
+| #   | Section                                                                      |                             |
+| :-- | :--------------------------------------------------------------------------- | :-------------------------- |
+| 1   | [Grant of License](#1-grant-of-license)                                      | What you may do for free    |
+| 2   | [Derivative Works](#2-derivative-works)                                      | Rules for modifications     |
+| 3   | [Mandatory Attribution Format](#3-mandatory-attribution-format)              | Required notices            |
+| 4   | [Commercial Licensing Process](#4-commercial-licensing-process)              | How to license commercially |
+| 5   | [Third-Party Licenses & Dependencies](#5-third-party-licenses--dependencies) | Open-source libraries used  |
+| 6   | [Disclaimer of Warranty](#6-disclaimer-of-warranty)                          | "As is" — no warranties     |
+| 7   | [Limitation of Liability](#7-limitation-of-liability)                        | Cap on damages              |
+| 8   | [Automatic Termination](#8-automatic-termination)                            | When the license ends       |
+| 9   | [Governing Law](#9-governing-law)                                            | Legal jurisdiction          |
+| 10  | [Licensing Contact & Inquiries](#10-licensing-contact--inquiries)            | Where to reach the owner    |
 
 ---
 
