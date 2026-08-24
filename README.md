@@ -1,265 +1,386 @@
-# 🏋️ AI Workout Tracker
+<img src="assets/images/icon.png" alt="AI Workout Tracker Logo" width="128" height="128" />
 
-**Cross-platform workout tracking with live set logging, streaks, and AI-assisted exercise guidance**
+# 🏋️‍♂️ AI Workout Tracker
 
-Built with [Expo SDK 57](https://docs.expo.dev/versions/v57.0.0/) and [React Native](https://reactnative.dev/),
-with a full-stack PostgreSQL API — all in one TypeScript project.
+**Production-grade, cross-platform mobile fitness companion featuring live set logging, streak analytics, full-stack Expo Router API routes, and server-side AI exercise form instructions.**
 
-[![Expo SDK](https://img.shields.io/badge/Expo_SDK-57-000020?style=flat-square&logo=expo&logoColor=white)](https://docs.expo.dev/versions/v57.0.0/)
-[![React Native](https://img.shields.io/badge/React_Native-0.86-61DAFB?style=flat-square&logo=react&logoColor=111827)](https://reactnative.dev/)
-[![React 19](https://img.shields.io/badge/React-19.2-61DAFB?style=flat-square&logo=react&logoColor=111827)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![NativeWind](https://img.shields.io/badge/NativeWind-Tailwind-38BDF8?style=flat-square&logo=tailwindcss&logoColor=white)](https://www.nativewind.dev/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Drizzle-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://orm.drizzle.team/)
-
----
-
-## ✨ Overview
-
-AI Workout Tracker is a complete, production-minded fitness application for iOS and Android. It lets you
-**plan workouts, track sets in real time, review your training history on a calendar, and maintain streaks** —
-while an integrated AI engine explains how to perform each exercise safely.
-
-Routing, authentication, and the backend API all run inside a single Expo project, so the whole stack stays
-conventional, version-aligned, and easy to run locally.
-
-> **License notice** — This repository is distributed under the Techwithemma license. Personal learning and
-> portfolio use are permitted; commercial use requires a valid license. See [License](#license).
+[![Expo SDK 57](https://img.shields.io/badge/Expo_SDK-57-000020?style=for-the-badge&logo=expo&logoColor=white)](https://docs.expo.dev/versions/v57.0.0/)
+[![React Native 0.86](https://img.shields.io/badge/React_Native-0.86-61DAFB?style=for-the-badge&logo=react&logoColor=111827)](https://reactnative.dev/)
+[![React 19.2](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react&logoColor=111827)](https://react.dev/)
+[![TypeScript Strict](https://img.shields.io/badge/TypeScript-6.0_Strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![NativeWind v4](https://img.shields.io/badge/NativeWind-v4_Tailwind-38BDF8?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://www.nativewind.dev/)
+[![PostgreSQL & Drizzle](https://img.shields.io/badge/Database-Neon_Postgres_%7C_Drizzle-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://orm.drizzle.team/)
+[![Better Auth](https://img.shields.io/badge/Auth-Better_Auth-000000?style=for-the-badge&logo=lock&logoColor=white)](https://www.better-auth.com/)
+[![License](https://img.shields.io/badge/License-Techwithemma-FF4500?style=for-the-badge)](./LICENSE.md)
 
 ---
 
-## 🧰 Key Features
+## 📌 Table of Contents
 
-- **Expo Router navigation** with fully typed routes (`typedRoutes` enabled).
-- **Authentication** via [Better Auth](https://www.better-auth.com/) — email/password and Google sign-in, backed by Expo Secure Store.
-- **Multi-step onboarding** that captures your fitness profile and training goals.
-- **Workout library** — browse templates, create custom workouts, and set cover images.
-- **Exercise catalog** — search, select, and manage exercises with image uploads.
-- **Live session toolkit** — workout timer, rest timer, and per-set reps / weight / duration logging.
-- **Home dashboard** with daily stats and workout streaks.
-- **Calendar-based training history** for easy review.
-- **AI exercise instructions** served by the app's own API route.
-- **Theming** with light and dark appearance support.
-- **Full-stack API routes** backed by Neon PostgreSQL and Drizzle ORM.
-- **EAS Build / Submit** profiles for development, preview, and production.
-
-## 🧱 Technology Stack
-
-| Layer                | Tools                                          |
-| -------------------- | ---------------------------------------------- |
-| Mobile runtime       | Expo SDK 57 ・ React Native 0.86 ・ React 19.2 |
-| Language             | TypeScript (strict mode)                       |
-| Navigation           | Expo Router with typed routes                  |
-| Styling              | NativeWind v4 + Tailwind CSS                   |
-| Data fetching        | TanStack Query                                 |
-| Forms & validation   | React Hook Form + Zod resolvers                |
-| Authentication       | Better Auth + expo-secure-store                |
-| AI integrations      | Vercel AI SDK (`ai`)                           |
-| Backend API          | Expo Router `+api.ts` routes                   |
-| Database             | Neon PostgreSQL + Drizzle ORM                  |
-| Migrations           | drizzle-kit (`drizzle/` folder)                |
-| Build & distribution | EAS Build + EAS Submit                         |
-
-> **Compatibility (SDK 57):** React Native `0.86`, React `19.2`, Node.js `≥ 22.13`, Android 7+, iOS 16.4+.
-> See the [Expo SDK 57 reference](https://docs.expo.dev/versions/v57.0.0/).
+- [✨ Overview \& Key Features](#-overview--key-features)
+- [⚙️ How It Works](#️-how-it-works)
+- [🛠 Technology Stack](#-technology-stack)
+- [📁 Project Directory Topology](#-project-directory-topology)
+- [🔌 Full-Stack API Reference](#-full-stack-api-reference)
+- [⚡ Quick Start \& Setup](#-quick-start--setup)
+- [🔐 Environment Configuration](#-environment-configuration)
+- [💾 Database Management \& Migrations](#-database-management--migrations)
+- [📱 Native Build \& EAS Deployment](#-native-build--eas-deployment)
+- [🧪 Verification \& Code Quality](#-verification--code-quality)
+- [📄 Licensing \& Terms](#-licensing--terms)
+- [🙏 Acknowledgements](#-acknowledgements)
 
 ---
 
-## 📁 Project Structure
+## ✨ Overview & Key Features
 
-```text
-.
-├── assets/                  # App icons, splash, tab icons, workout images
-├── drizzle/                 # Generated SQL migrations + schema snapshots
-├── src/
-│   ├── app/                 # Screens, route groups, tabs, modals & API routes
-│   │   ├── (app)/           # Authenticated area (tabs, modals, workouts)
-│   │   ├── (public)/        # Onboarding / pre-auth screens
-│   │   └── api/             # +api.ts backend routes (auth, workouts, AI…)
-│   ├── components/          # Reusable UI & feature components
-│   ├── constants/           # App-wide constants & onboarding options
-│   ├── contexts/            # Shared workout / streak state
-│   ├── db/                  # Drizzle schema, client & seed data
-│   ├── hooks/               # Custom hooks (timers, debounce, …)
-│   ├── lib/                 # API, auth, image, formatting, validation helpers
-│   └── theme/               # Application theme configuration
-├── app.json                 # Expo application configuration
-├── babel.config.js          # babel-preset-expo + NativeWind preset
-├── eas.json                 # EAS build & submit profiles
-├── drizzle.config.ts        # Drizzle CLI configuration
-├── tsconfig.json            # Strict TypeScript + path aliases (@/*)
-└── package.json
+**AI Workout Tracker** is a feature-complete, modern full-stack fitness solution designed for iOS, Android, and Web targets. Built with **Expo SDK 57** and **React Native**, it combines a high-performance native UI with a serverless backend API embedded directly inside Expo Router using `+api.ts` handlers.
+
+> [!NOTE]
+> **Monorepo Simplicity:** Backend API endpoints, authentication flows, database schema, and native mobile screens co-exist within a unified codebase without requiring a separate web server repository.
+
+### 🌟 Key Highlights
+
+- **🔒 Enterprise-Grade Authentication**: Powered by [Better Auth](https://www.better-auth.com/) supporting Email/Password and Google OAuth, backed by native secure key storage via `expo-secure-store`.
+- **🤖 Integrated AI Exercise Coach**: Server-side AI instructions powered by Vercel AI SDK (`ai`) providing personalized form cues, safety tips, and execution guidance per exercise.
+- **🏋️ Live Workout Toolkit**: Real-time workout duration timer, rest countdown timer, and set-by-set weight/rep/time tracking.
+- **📊 Streak & Analytics Engine**: Home dashboard featuring daily volume metrics, streak counters, and an interactive calendar training history.
+- **📚 Workout Routine Library**: Customizable workout templates, exercise search/filtering, target muscle targeting, and custom image handling.
+- **🎨 Modern Design System**: Responsive, glassmorphism-inspired UI components engineered with **NativeWind v4** (Tailwind CSS) with fluid dark/light appearance support.
+- **⚡ Serverless Backend Infrastructure**: Full-stack server routes (`+api.ts`) connecting to **Neon PostgreSQL** serverless cloud DB through **Drizzle ORM**.
+- **📦 Production-Ready EAS Workflows**: Complete EAS build and submit configurations (`development`, `preview`, `production`).
+
+---
+
+## ⚙️ How It Works
+
+### Authentication & Session Flow
+
+```mermaid
+flowchart LR
+    AuthUI["User submits Auth Form / Google OAuth"] --> BetterAuth["Better Auth Client (@better-auth/expo)"]
+    BetterAuth --> AuthRoute["POST /api/auth/* (+api.ts Server Route)"]
+    AuthRoute --> Drizzle["Drizzle ORM validates & creates User / Session"]
+    Drizzle --> NeonDB[(Neon PostgreSQL Database)]
+    AuthRoute --> Token["Session Token & Cookie Issued"]
+    Token --> SecureStore["Persisted in Expo SecureStore"]
+    SecureStore --> State["AuthContext updates state"]
+    State --> Nav["Expo Router redirects to (app) Tab Bar"]
 ```
 
-Path aliases map `@/*` → `src/*` and `@/assets/*` → `assets/*`.
+### Live Workout Tracking & Session Flow
 
-## ✅ Prerequisites
+```mermaid
+flowchart LR
+    Select["Select Routine / Exercises in (app)"] --> Active["Start Active Session in WorkoutSessionContext"]
+    Active --> Timers["Run Workout Duration & Rest Countdown Timers"]
+    Timers --> Logging["Log Weight, Reps & Completed Sets in Real-Time"]
+    Logging --> Finish["Complete Workout Session"]
+    Finish --> PostSession["POST /api/workout-sessions (+api.ts)"]
+    PostSession --> Validate["Zod Schema Validation"]
+    Validate --> WriteDB["Drizzle ORM stores Session, Sets & Reps"]
+    WriteDB --> Streak["Compute Streak & Volume Analytics"]
+    Streak --> Invalidate["TanStack Query invalidates cache"]
+    Invalidate --> Dashboard["Dashboard & History Calendar auto-update"]
+```
 
-- **Node.js LTS** — SDK 57 requires **22.13 or newer**.
-- **npm** (bundled with Node.js).
-- A **PostgreSQL** database (e.g. [Neon](https://neon.tech/)) for the API.
-- Expo CLI through the local project scripts (`npx expo`).
-- **For native builds:** Android Studio and/or Xcode, depending on your target platform.
-- **For EAS builds:** an Expo account and the [EAS CLI](https://docs.expo.dev/eas/).
+### AI Exercise Guidance & Coach Flow
+
+```mermaid
+flowchart LR
+    ViewEx["User views Exercise Card / Modal"] --> TriggerAI["Tap 'Get AI Guidance'"]
+    TriggerAI --> AIRoute["POST /api/exercises/[id]/instructions"]
+    AIRoute --> ExMeta["Fetch exercise muscle groups & data from Neon DB"]
+    ExMeta --> AISdk["Invoke Vercel AI SDK ('ai') with prompt"]
+    AISdk --> LLM["LLM Provider (AI Model Engine)"]
+    LLM --> Stream["Return structured form cues & safety tips"]
+    Stream --> RenderUI["Render interactive AI Coach Card in Mobile App"]
+```
+
+### Database & Migration CLI Flow
+
+```mermaid
+flowchart LR
+    Schema["Modify src/db/schema/*.ts"] --> Generate["npm run db:generate"]
+    Generate --> Sql["Generate SQL Migration in ./drizzle"]
+    Sql --> Migrate["npm run db:migrate"]
+    Migrate --> Neon[(Apply Schema to Neon PostgreSQL)]
+    Push["npm run db:push (Dev Iteration)"] --> Neon
+    Seed["npm run db:seed"] --> Populate["Populate Exercise Catalog"]
+    Studio["npm run db:studio"] --> Visual["Visual GUI Web Inspector"]
+```
+
+### Architecture Topology Overview
+
+```mermaid
+flowchart TB
+    Client["📱 Mobile Client (iOS / Android / Web)"]
+    Router["Expo Router (Typed Routes)"]
+    NativeWind["NativeWind v4 (Tailwind CSS)"]
+    BetterAuthClient["Better Auth Client + SecureStore"]
+    Query["TanStack Query (Cache & State)"]
+    ApiRoutes["⚡ Expo Serverless API Layer (+api.ts)"]
+    AuthServer["Better Auth Handler (/api/auth)"]
+    AIServer["Vercel AI SDK Handler (/api/exercises/[id]/instructions)"]
+    DataServer["Data Endpoints (/api/workouts, /api/workout-sessions, /api/home-stats)"]
+    Drizzle["Drizzle ORM Engine"]
+    NeonDB[(Neon PostgreSQL Serverless Cloud)]
+    EAS["EAS Build & Submit Pipelines"]
+
+    Client -->|"Typed Navigation"| Router
+    Client -->|"Styled UI Components"| NativeWind
+    Client -->|"Session Persistence"| BetterAuthClient
+    Client -->|"Data Fetching & Cache"| Query
+    Query -->|"HTTP Requests"| ApiRoutes
+    ApiRoutes --> AuthServer
+    ApiRoutes --> AIServer
+    ApiRoutes --> DataServer
+    AuthServer --> Drizzle
+    DataServer --> Drizzle
+    Drizzle -->|"Serverless SQL"| NeonDB
+    EAS -->|"Dev / Preview / Production"| Client
+```
 
 ---
 
-## 🚀 Getting Started
+## 🛠 Technology Stack
 
-1. **Clone the repository and enter the project directory:**
+| Domain               | Technology / Library            | Version / Details                 |
+| :------------------- | :------------------------------ | :-------------------------------- |
+| **Mobile Runtime**   | Expo SDK                        | `~57.0.11`                        |
+| **UI Core**          | React Native / React            | `0.86.2` / `19.2.3`               |
+| **Language**         | TypeScript                      | `~6.0.3` (Strict Mode)            |
+| **Navigation**       | Expo Router                     | `~57.0.11` (Typed Routes Enabled) |
+| **Styling**          | NativeWind / Tailwind CSS       | `v4.2.6` / `^3.4.19`              |
+| **Data Fetching**    | TanStack Query                  | `^5.101.4`                        |
+| **Form Handling**    | React Hook Form + Zod           | `^7.81.0` / `^5.4.0`              |
+| **Authentication**   | Better Auth + Expo Secure Store | `^1.6.25` / `^57.0.1`             |
+| **AI Integration**   | Vercel AI SDK                   | `^7.0.56`                         |
+| **Backend API**      | Expo Router `+api.ts` Routes    | Serverless Handler Convention     |
+| **Database**         | Neon Serverless PostgreSQL      | `@neondatabase/serverless ^1.1.0` |
+| **ORM & Migrations** | Drizzle ORM / Drizzle Kit       | `^0.45.2` / `^0.31.10`            |
+| **Build & Deploy**   | EAS Build & EAS Submit          | Managed Expo Cloud Pipelines      |
+
+---
+
+## 📁 Project Directory Topology
+
+```text
+ai-workout-tracker/
+├── assets/                    # App icons, splash screens, tab icons, imagery
+├── drizzle/                   # Generated SQL migrations & schema snapshots
+├── scripts/                   # Utility scripts (reset project, seeding, etc.)
+├── src/
+│   ├── app/                   # Expo Router file-based routing architecture
+│   │   ├── (app)/             # Authenticated route group (tabs, workouts, modals)
+│   │   ├── (public)/          # Pre-auth route group (welcome, login, onboarding)
+│   │   ├── api/               # Serverless API routes (+api.ts handlers)
+│   │   │   ├── auth/          # Better Auth endpoints ([...auth]+api.ts)
+│   │   │   ├── exercises/     # Exercise catalog & AI instruction endpoints
+│   │   │   ├── home-stats/    # Analytics & streak calculations
+│   │   │   ├── workout-sessions/ # Active & past session logs
+│   │   │   └── workouts/      # Routine templates & management
+│   │   ├── _layout.tsx        # Root layout with QueryClient & Auth Providers
+│   │   └── index.tsx          # Initial entry router & splash guard
+│   ├── components/            # Reusable UI primitives & domain components
+│   ├── constants/             # App-wide constants, onboarding configurations
+│   ├── contexts/              # React Contexts (Workout session, streak state)
+│   ├── db/                    # Database layer
+│   │   ├── schema/            # Drizzle relational table definitions
+│   │   ├── client.ts          # Neon Postgres Drizzle client instance
+│   │   └── seed/              # Exercise catalog seeder script
+│   ├── hooks/                 # Custom React hooks (timers, debounce, etc.)
+│   ├── lib/                   # Utility libraries (auth client, formatting, Zod schemas)
+│   └── theme/                 # Design system tokens & color palettes
+├── app.json                   # Expo config (typed routes, experimental features)
+├── babel.config.js            # Babel preset for Expo & NativeWind
+├── drizzle.config.ts          # Drizzle CLI configuration
+├── eas.json                   # EAS Build profiles (development, preview, production)
+├── tailwind.config.js         # Tailwind CSS theme extension & design tokens
+├── tsconfig.json              # Strict TypeScript settings (alias path: @/* -> src/*)
+└── package.json               # Dependencies & lifecycle scripts
+```
+
+---
+
+## 🔌 Full-Stack API Reference
+
+All backend functionality is hosted directly within the Expo app via `src/app/api/*+api.ts` handlers:
+
+| Endpoint                           |    Method    | Description                                                     |
+| :--------------------------------- | :----------: | :-------------------------------------------------------------- |
+| `/api/auth/*`                      | `GET / POST` | Better Auth handlers (signup, login, OAuth, session management) |
+| `/api/exercises`                   |    `GET`     | Fetch & filter full exercise catalog                            |
+| `/api/exercises/[id]`              |    `GET`     | Get exercise details by ID                                      |
+| `/api/exercises/[id]/instructions` |    `POST`    | Generate real-time AI exercise execution guide & safety tips    |
+| `/api/workouts`                    | `GET / POST` | List user workout routines / Create new workout template        |
+| `/api/workout-sessions`            | `GET / POST` | Retrieve training history / Log completed workout session       |
+| `/api/home-stats`                  |    `GET`     | Compute daily workout statistics, volume, and active streak     |
+
+---
+
+## ⚡ Quick Start & Setup
+
+### Prerequisites
+
+Ensure your development environment meets the following requirements:
+
+- **Node.js**: `≥ 22.13.0` (Required for Expo SDK 57).
+- **Package Manager**: `npm` (bundled with Node.js).
+- **PostgreSQL Database**: A running PostgreSQL instance or a free account at [Neon.tech](https://neon.tech/).
+- **Expo Go / Development Build**: Installed on your mobile test device or simulator.
+
+### Installation Steps
+
+1. **Clone the repository:**
 
    ```bash
    git clone https://github.com/GiorgiKavtaradze-prog/tracker-native-app.git
    cd tracker-native-app
    ```
 
-2. **Install dependencies:**
+2. **Install project dependencies:**
 
    ```bash
    npm install
    ```
 
-3. **Create a local environment file:**
+3. **Configure Environment Variables:**
 
    ```bash
-   # Windows
+   # Windows PowerShell
    copy .env.example .env
+
    # macOS / Linux
    cp .env.example .env
    ```
 
-4. **Fill in real credentials** in `.env` for your own services. Never commit `.env` or any server secrets (it is git-ignored).
+   Edit `.env` and fill in your database connection string and provider credentials.
 
-5. **Apply the database schema and seed the exercise catalog:**
+4. **Initialize Database Schema & Seed Data:**
 
    ```bash
    npm run db:migrate
    npm run db:seed
    ```
 
-6. **Start the development server:**
+5. **Launch Development Server:**
 
    ```bash
    npm run start
    ```
 
-   Use the Expo CLI prompt to open the app on an Android emulator, iOS simulator, or a development build.
+   Press `a` to launch on Android Emulator, `i` for iOS Simulator, or scan the QR code with Expo Go / Dev Client.
 
 ---
 
-## 🌱 Environment Variables
+## 🔐 Environment Configuration
 
-The app uses public configuration for the mobile client and private credentials for API/database integrations.
+> [!IMPORTANT]
+> **Physical Device Networking:** When running on a physical phone, `localhost` points to the device itself. Set `EXPO_PUBLIC_API_URL` to your computer's local IP address on your Wi-Fi network (e.g. `http://192.168.1.50:8081`).
 
-| Variable               | Used by                | Description                                    |
-| ---------------------- | ---------------------- | ---------------------------------------------- |
-| `EXPO_PUBLIC_API_URL`  | Mobile client          | Base URL for the Expo API routes & auth server |
-| `DATABASE_URL`         | Server and Drizzle CLI | PostgreSQL connection string                   |
-| `BETTER_AUTH_URL`      | API                    | Public base URL used by Better Auth            |
-| `BETTER_AUTH_SECRET`   | API                    | Secret used to protect Better Auth sessions    |
-| `GOOGLE_CLIENT_ID`     | API                    | Google OAuth client ID                         |
-| `GOOGLE_CLIENT_SECRET` | API                    | Google OAuth client secret                     |
-| `IMAGEKIT_PRIVATE_KEY` | API                    | Private key for workout image uploads          |
-
-Additional provider configuration may be required for the AI route in
-`src/app/api/exercises/[id]/instructions+api.ts`. Keep all provider keys server-side and follow the setup
-instructions supplied with your licensed copy.
-
-> **Device networking** — When testing on a physical device, `localhost` points to the device itself. Set
-> `EXPO_PUBLIC_API_URL` to an address reachable from the device, such as your computer's local network IP,
-> then restart Expo with a cleared cache if necessary.
+| Variable               |     Scope     | Required | Description                                         |
+| :--------------------- | :-----------: | :------: | :-------------------------------------------------- |
+| `EXPO_PUBLIC_API_URL`  | Mobile Client | **Yes**  | Base API URL for Expo Router `+api.ts` routes       |
+| `DATABASE_URL`         | Backend / CLI | **Yes**  | PostgreSQL connection string (e.g., Neon Postgres)  |
+| `BETTER_AUTH_URL`      |  Server API   | **Yes**  | Public canonical URL for Better Auth authentication |
+| `BETTER_AUTH_SECRET`   |  Server API   | **Yes**  | Encryption key used to secure user sessions         |
+| `GOOGLE_CLIENT_ID`     |  Server API   | Optional | OAuth Client ID for Google authentication           |
+| `GOOGLE_CLIENT_SECRET` |  Server API   | Optional | OAuth Client Secret for Google authentication       |
+| `IMAGEKIT_PRIVATE_KEY` |  Server API   | Optional | Private key for custom image uploads                |
 
 ---
 
-## 🗄️ Database Workflow
+## 💾 Database Management & Migrations
 
-Drizzle reads `DATABASE_URL` from the environment and stores migrations in `drizzle/`.
+Database operations are managed via **Drizzle ORM** and **Drizzle Kit**.
 
 ```bash
-npm run db:generate   # Generate a migration from schema changes
-npm run db:migrate    # Apply committed migrations
-npm run db:push       # Push the schema directly during development
-npm run db:seed       # Seed the exercise catalog
-npm run db:studio     # Open Drizzle Studio
+# Generate SQL migration files from Drizzle schema changes
+npm run db:generate
+
+# Apply pending SQL migrations to the database
+npm run db:migrate
+
+# Push schema directly to DB (local fast iteration)
+npm run db:push
+
+# Seed default exercise database
+npm run db:seed
+
+# Launch visual database browser GUI
+npm run db:studio
 ```
 
-Use migrations for shared environments and releases. Reserve `db:push` for local iteration when a migration
-file is not needed.
-
-## 🛠️ Development
-
-```bash
-npm run start          # Start Expo dev server
-npm run android        # Build & run on the Android native project
-npm run ios            # Build & run on the iOS native project
-npm run web            # Start the web target
-npm run lint           # Run Expo lint
-```
-
-The project enables **Expo Router typed routes** and the **React Compiler** via `app.json` experiments. Route
-files live under `src/app`; API routes use the `+api.ts` convention.
+> [!TIP]
+> Use `npm run db:push` during rapid prototyping, and generate versioned migration files with `npm run db:generate` before committing code.
 
 ---
 
-## 📦 Build & Release
+## 📱 Native Build & EAS Deployment
 
-Three EAS profiles are included:
+The app includes ready-to-use profiles in `eas.json` for building native iOS `.ipa` and Android `.apk` / `.aab` packages.
 
-| Profile       | Purpose                  | Output                                  |
-| ------------- | ------------------------ | --------------------------------------- |
-| `development` | Local development client | Internal development build              |
-| `preview`     | Device testing & QA      | Internal Android APK / iOS device build |
-| `production`  | Store release            | Production Android & iOS artifacts      |
+### Available EAS Profiles
 
-**Install & authenticate with EAS:**
+| Profile       | Target Audience | Output Format                             | Purpose                                 |
+| :------------ | :-------------- | :---------------------------------------- | :-------------------------------------- |
+| `development` | Developers      | Internal Dev Build                        | Native debugging & hot reload           |
+| `preview`     | Testers / QA    | `.apk` (Android) / `.ipa` (iOS)           | Standalone testing on physical hardware |
+| `production`  | App Stores      | `.aab` (Google Play) / `.ipa` (App Store) | Production release build                |
+
+### Build Commands
 
 ```bash
-npm install --global eas-cli
+# Install EAS CLI globally & login
+npm install -g eas-cli
 eas login
-```
 
-**Build a preview release:**
-
-```bash
+# Build Preview APK for Android testing
 eas build --profile preview --platform android
+
+# Build Preview IPA for iOS testing
 eas build --profile preview --platform ios
-```
 
-**Build & submit a production release:**
-
-```bash
-eas build --profile production --platform all
+# Submit Production builds to stores
 eas submit --platform android
 eas submit --platform ios
 ```
 
-For iOS physical-device registration, credentials, and platform-specific distribution details, see
-[EAS.md](./EAS.md).
+For complete step-by-step iOS device registration and distribution instructions, refer to [EAS.md](./EAS.md).
 
 ---
 
-## 🤝 Contributing
+## 🧪 Verification & Code Quality
 
-1. Create a focused branch from the current development branch.
-2. Make the smallest change that fully addresses the issue.
-3. Run `npm run lint` and any relevant database or platform checks.
-4. Update documentation when behavior, configuration, or commands change.
-5. Open a pull request with a concise description and verification notes.
+Maintain high standard code quality using Expo CLI linting and strict TypeScript checks:
+
+```bash
+# Run ESLint & Expo static analysis
+npm run lint
+
+# Type check TypeScript codebase
+npx tsc --noEmit
+```
 
 ---
 
-## 📄 License
+## 📄 Licensing & Terms
 
-The project is provided under the [License](./LICENSE.md).
+This project is licensed under the terms of the **Techwithemma License**. See [LICENSE.md](./LICENSE.md) for complete details.
 
-- Personal learning and portfolio use are allowed under the stated terms.
-- Commercial products, SaaS deployments, client work, paid content, and redistribution require a valid
-  commercial license.
-- Third-party dependencies and services remain subject to their own licenses and terms.
+- **Allowed**: Personal learning, research, educational study, and non-commercial portfolio demonstrations.
+- **Restricted**: Commercial use, SaaS deployment, client deliverables, paid educational products, or redistribution require an explicit commercial license.
 
 ---
 
 ## 🙏 Acknowledgements
 
-Built with the Expo, React Native, Drizzle, Neon, Better Auth, TanStack Query, NativeWind, and EAS
-ecosystems.
+Built with passion using open-source tools from the mobile and web ecosystem:
+
+- [Expo](https://expo.dev) & [React Native](https://reactnative.dev)
+- [Drizzle ORM](https://orm.drizzle.team) & [Neon Postgres](https://neon.tech)
+- [Better Auth](https://www.better-auth.com)
+- [NativeWind](https://www.nativewind.dev)
+- [Vercel AI SDK](https://sdk.vercel.ai)
+- [TanStack Query](https://tanstack.com/query)
