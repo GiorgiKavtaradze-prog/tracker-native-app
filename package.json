@@ -18,11 +18,13 @@
     "date-fns": "^4.4.0",
     "drizzle-orm": "^0.45.2",
     "expo": "~57.0.11",
+    "expo-blur": "~57.0.2",
     "expo-constants": "~57.0.9",
     "expo-dev-client": "~57.0.12",
     "expo-device": "~57.0.1",
     "expo-font": "~57.0.1",
     "expo-glass-effect": "~57.0.1",
+    "expo-haptics": "~57.0.1",
     "expo-image": "~57.0.2",
     "expo-image-picker": "~57.0.9",
     "expo-linear-gradient": "~57.0.1",
@@ -70,4 +72,3 @@
   },
   "private": true
 }
-

@@ -56,8 +56,8 @@ export async function GET(request: Request, { id }: Record<string, string>) {
         instructions: output.instructions,
       });
     }
-  } catch (error) {
-    console.log("AI generation failed", error);
+  } catch {
+    // AI generation fallback
   }
 
   return Response.json({

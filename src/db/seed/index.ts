@@ -40,7 +40,6 @@ async function seed() {
   }));
 
   await db.insert(exercises).values(values).onConflictDoNothing();
-  console.log("Exercise seed complete");
 }
 
 seed().catch((error) => {
