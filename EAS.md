@@ -1,158 +1,317 @@
-# Building Your Expo App with EAS (Android + iOS)
+# 🚀 Building & Deploying with EAS (Expo Application Services)
 
-A simple walkthrough of setting up EAS Build for both platforms, with `preview` and `production` profiles explained.
+**Production-grade deployment playbook for building, distributing, and submitting AI Workout Tracker to iOS and Android.**
 
-## 1. Install the EAS CLI
+[![EAS Build](https://img.shields.io/badge/EAS-Build_Managed-000020?style=for-the-badge&logo=expo&logoColor=white)](https://docs.expo.dev/build/introduction/)
+[![EAS Submit](https://img.shields.io/badge/EAS-Submit_Automated-4630EB?style=for-the-badge&logo=expo&logoColor=white)](https://docs.expo.dev/submit/introduction/)
+[![Platforms](https://img.shields.io/badge/Platforms-Android_%7C_iOS-3DDC84?style=for-the-badge&logo=android&logoColor=white)](https://expo.dev)
 
-```bash
-npm install -g eas-cli
+---
+
+## 📌 Table of Contents
+
+- [⚙️ How EAS Works](#️-how-eas-works)
+- [⚙️ Prerequisites \& Setup](#️-prerequisites--setup)
+- [🛠 Project Configuration (`eas.json`)](#-project-configuration-easjson)
+- [📲 Device Registration (iOS)](#-device-registration-ios)
+- [📦 Executing Builds](#-executing-builds)
+- [⚖️ Android vs iOS Compatibility Matrix](#️-android-vs-ios-compatibility-matrix)
+- [🚀 App Store \& Google Play Submission](#-app-store--google-play-submission)
+- [🔄 OTA Updates (EAS Update)](#-ota-updates-eas-update)
+- [💡 Troubleshooting \& Best Practices](#-troubleshooting--best-practices)
+
+---
+
+## ⚙️ How EAS Works
+
+### CLI Cloud Build Execution Flow
+
+```mermaid
+flowchart LR
+    DevCmd["Developer runs eas build --profile --platform"] --> LocalScan["EAS CLI parses eas.json & app.json"]
+    LocalScan --> UploadTar["Package source code & upload tarball to EAS Cloud"]
+    UploadTar --> CloudRunner["EAS Worker spawned (Linux for Android / macOS for iOS)"]
+    CloudRunner --> Credentials["Fetch signing certificates from Expo Credential Manager"]
+    Credentials --> Compile["Execute prebuild, install dependencies & run native compilation"]
+    Compile --> Artifacts["Generate build output (.apk / .aab / .ipa)"]
+    Artifacts --> CDN["Host artifact on Expo CDN & generate download link / QR code"]
 ```
 
-This gives you the `eas` command globally, so you can run it from any project.
+### iOS Physical Device Ad-Hoc Registration Flow
 
-## 2. Log in to your Expo account
-
-```bash
-eas login
+```mermaid
+flowchart LR
+    DevReg["Developer executes eas device:create"] --> QR["EAS generates registration URL & QR code"]
+    QR --> Safari["Open URL in Safari on target iPhone"]
+    Safari --> Profile["Download & install Expo iOS Management Profile"]
+    Profile --> Settings["Trust Profile in Settings → General → VPN & Device Management"]
+    Settings --> SyncUDID["UDID synced to Apple Developer Portal via EAS API"]
+    SyncUDID --> Provision["EAS includes UDID in provisioning profile for next Preview build"]
 ```
 
-Builds run on Expo's servers, so it needs to know which account they belong to.
+### Store Submission & Release Flow
 
-## 3. Configure your project for EAS
-
-```bash
-eas build:configure
+```mermaid
+flowchart LR
+    SubmitCmd["Developer runs eas submit --platform"] --> SelectBuild["Select recent Production Build artifact (.aab / .ipa)"]
+    SelectBuild --> ResolvCreds["Resolve Apple API Key / Google Play Service Account JSON"]
+    ResolvCreds --> AuthStore["Authenticate with App Store Connect / Play Console API"]
+    AuthStore --> UploadBin["Upload binary (.ipa to TestFlight / .aab to Play Console Track)"]
+    UploadBin --> VerifyStore["Verify processing status & release to store tracks"]
 ```
 
-Run this once per project. It creates the `eas.json` file (build profiles) and adds a `projectId` under `extra.eas` in your `app.json`/`app.config.js`, linking this local project to a project on Expo's servers.
+### Over-The-Air (OTA) EAS Update Flow
 
-## 4. Understand `eas.json`
+```mermaid
+flowchart LR
+    CodeFix["Developer fixes JS code or assets"] --> UpdateCmd["Run eas update --channel production"]
+    UpdateCmd --> BundleJS["Export mini JS bundle & optimize static assets"]
+    BundleJS --> PushCDN["Upload update manifest to Expo CDN"]
+    PushCDN --> ClientApp["Mobile App launches on user device"]
+    ClientApp --> CheckUpdate["Check Expo Update endpoint for new manifest"]
+    CheckUpdate --> HotApply["Download & apply update seamlessly on next app launch"]
+```
 
-This is the file that controls _how_ each build behaves. Here's a standard setup with comments explaining each part:
+### EAS Infrastructure Topology Overview
+
+```mermaid
+flowchart TB
+    Cli["💻 EAS CLI (eas.json / app.json)"]
+    BuildEngine["⚡ EAS Cloud Build Engine (macOS & Linux Workers)"]
+    SubmitEngine["🚀 EAS Submit Engine (Automated Store Uploader)"]
+    UpdateCdn["🔄 EAS Update CDN (Over-The-Air JS Bundles)"]
+    SecretsManager["🔐 EAS Environment Secrets Manager"]
+    AppleDev["🍎 Apple Developer Portal & App Store Connect"]
+    GooglePlay["🤖 Google Play Console API"]
+    TestDevices["📱 Testers & Physical Test Hardware"]
+    StoreUsers["👥 Production Mobile App Users"]
+
+    Cli -->|"eas build"| BuildEngine
+    Cli -->|"eas submit"| SubmitEngine
+    Cli -->|"eas update"| UpdateCdn
+    SecretsManager -->|"Inject env vars"| BuildEngine
+    BuildEngine -->|"Signing Certs & UDID"| AppleDev
+    BuildEngine -->|"Compiled IPA / APK"| TestDevices
+    BuildEngine -->|"Production AAB / IPA"| SubmitEngine
+    SubmitEngine -->|"Auto Upload IPA"| AppleDev
+    SubmitEngine -->|"Auto Upload AAB"| GooglePlay
+    UpdateCdn -->|"OTA JS Updates"| StoreUsers
+```
+
+---
+
+## ⚙️ Prerequisites & Setup
+
+Before building native artifacts with EAS, ensure the following requirements are met:
+
+- **Node.js**: `≥ 22.13.0` (Required for Expo SDK 57 compatibility).
+- **Expo Account**: Free or paid account at [Expo.dev](https://expo.dev).
+- **Apple Developer Account** _(Required for physical iOS builds)_: Paid account ($99/year).
+- **Google Play Console Account** _(Required for Android Play Store submission)_: One-time fee ($25).
+
+### Initial CLI Setup
+
+1. **Install the EAS CLI globally:**
+
+   ```bash
+   npm install --global eas-cli
+   ```
+
+2. **Authenticate with your Expo account:**
+
+   ```bash
+   eas login
+   ```
+
+3. **Link your local project to Expo Cloud Services:**
+
+   ```bash
+   eas build:configure
+   ```
+
+   _This command automatically updates `app.json` with a unique `projectId` under `extra.eas` and verifies `eas.json`._
+
+---
+
+## 🛠 Project Configuration (`eas.json`)
+
+The `eas.json` file defines build parameters, environment scopes, and submission parameters across `development`, `preview`, and `production` profiles.
 
 ```jsonc
 {
   "cli": {
-    // Pins the EAS CLI version so builds behave the same on every machine,
-    // including CI — avoids "works on my machine" surprises.
     "version": ">= 10.0.0",
+    "promptToAutoIncrement": true,
   },
   "build": {
     "development": {
-      // For local development — includes the dev client so you get
-      // hot reload, debugging tools, etc. Not for testers or the store.
       "developmentClient": true,
-      "distribution": "internal",
-      "android": {
-        "buildType": "apk", // apk installs directly on a device, no store needed
-      },
-    },
-    "preview": {
-      // For testers — a real, installable build (no dev tools attached),
-      // but not submitted anywhere. Share the link/APK directly.
       "distribution": "internal",
       "android": {
         "buildType": "apk",
       },
-      // No "ios.simulator" flag here — omitting it (or setting it to false)
-      // means this profile builds for REAL devices, which is what you want
-      // for handing a build to yourself or a tester. Simulator builds are
-      // a separate, optional use case — see the note in step 6.
+      "ios": {
+        "simulator": true,
+      },
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk",
+      },
+      "ios": {
+        "simulator": false,
+      },
     },
     "production": {
-      // The real deal — what actually gets submitted to the App Store
-      // and Google Play. Android builds as an .aab (required by Play Store),
-      // not an .apk.
-      "autoIncrement": true, // bumps the build number automatically each build
+      "autoIncrement": true,
+      "android": {
+        "buildType": "app-bundle",
+      },
     },
   },
   "submit": {
     "production": {},
-    // Settings for `eas submit` go here later (Apple ID, Play service account, etc.)
   },
 }
 ```
 
-**The key difference between `preview` and `production`:** `preview` gives you something installable to test with right now, on a real device. `production` gives you the actual file format each store requires, plus things like auto-incrementing build numbers that stores expect to increase with every release.
+### Profile Breakdown
 
-## 5. iOS-only: register your device BEFORE building
+> [!NOTE]
+>
+> - **`development`**: Compiles an internal dev client package containing debugging tools and hot-reloading support.
+> - **`preview`**: Produces a standalone, installable build without dev tools attached. Ideal for QA, client demos, and real device testing.
+> - **`production`**: Produces optimized App Store bundles (`.aab` for Google Play, `.ipa` for Apple App Store Connect) with automated build number incrementation.
 
-Android has no equivalent to this step — skip straight to step 6 if you're only building for Android.
+---
 
-Apple requires every physical iPhone to be explicitly registered before any build (yours or the App Store's) can install on it. This needs a paid **Apple Developer account** ($99/year).
+## 📲 Device Registration (iOS)
+
+> [!IMPORTANT]
+> **Apple Security Policy:** Physical iPhones require explicit UDID registration before ad-hoc preview builds can be installed. (Android does not require device registration).
+
+1. **Register a physical test device:**
+
+   ```bash
+   eas device:create
+   ```
+
+2. **Complete Registration on iPhone:**
+   - Open the generated QR code/link in **Safari** on the test iPhone.
+   - Install the Expo Management Profile when prompted in **Settings → General → VPN & Device Management**.
+   - Your device UDID will automatically sync with your Apple Developer Account via EAS.
+
+---
+
+## 📦 Executing Builds
+
+EAS compiles your native binaries on managed cloud servers (macOS for iOS, Linux for Android), eliminating the need for local Xcode or Android Studio installations.
+
+### 1. Development Client Builds
+
+Build a custom development client to test native native modules locally:
 
 ```bash
-eas device:create
+# Android Development APK
+eas build --profile development --platform android
+
+# iOS Simulator Build
+eas build --profile development --platform ios
 ```
 
-This gives you a link/QR code. Open it **on the iPhone you want to test on** — it registers that device's UDID with your Apple Developer account. Repeat this for every tester's iPhone before they can install your build.
+### 2. Preview & Internal Testing Builds
 
-> Note: this step is only needed for real-device builds. If you've already been testing locally with `expo run:ios`, that already builds and runs on a simulator or connected device through Xcode — you don't need `eas device:create` or an EAS build just to keep doing that. EAS's simulator build option exists for a different case: sharing a build with a collaborator who doesn't have your project set up locally, so they can drag it into their own simulator. It's not part of the real-device testing flow below.
-
-## 6. Run a preview build
+Generate installable standalone packages for QA testers and internal devices:
 
 ```bash
+# Android Standalone APK (Install directly on any device)
 eas build --profile preview --platform android
-```
 
-```bash
+# iOS Registered Device Build (Installs via Safari link)
 eas build --profile preview --platform ios
-```
 
-Or both at once:
-
-```bash
+# Build Preview for both platforms simultaneously
 eas build --profile preview --platform all
 ```
 
-`--profile` picks which block from `eas.json` to use. `--platform` picks which OS to build for (`android`, `ios`, or `all`). For iOS, this builds specifically for the device(s) you registered in step 5.
+### 3. Production Release Builds
 
-This uploads your project to EAS's servers, builds it there, and gives you a download link when it's done — no Xcode or Android Studio needed locally.
-
-## 7. Install the preview build on a device
-
-Build finishes → EAS gives you a download link and QR code, for both platforms.
-
-- **Android**: open the link on the phone, download and install the `.apk` directly (you may need to allow installs from unknown sources). Works on any Android phone, no registration needed.
-- **iOS**: open the link **on the same iPhone you registered in step 5** (must be Safari). It installs like a normal app icon. Then go to **Settings → General → VPN & Device Management**, tap the developer profile, and trust it — without this step the app installs but refuses to open. Only registered devices can install; any other iPhone is rejected.
-
-## 8. Run a production build
+Compile final store-ready release packages:
 
 ```bash
+# Android Play Store Bundle (.aab)
 eas build --profile production --platform android
-```
 
-```bash
+# iOS App Store Package (.ipa)
 eas build --profile production --platform ios
+
+# Build Production for both platforms
+eas build --profile production --platform all
 ```
 
-Same command shape as preview — just swap the profile. This produces the `.aab` (Android) and `.ipa` (iOS) files the stores actually require.
+---
 
-## 9. Submit to the stores
+## ⚖️ Android vs iOS Compatibility Matrix
+
+| Aspect                         | Android                        | iOS                                              |
+| :----------------------------- | :----------------------------- | :----------------------------------------------- |
+| **Store Artifact Format**      | Android App Bundle (`.aab`)    | iOS App Store Package (`.ipa`)                   |
+| **Preview Testing Format**     | Android Package (`.apk`)       | Registered Ad-Hoc (`.ipa`)                       |
+| **Device UDID Registration**   | Not required                   | **Mandatory** (`eas device:create`)              |
+| **Developer Account Required** | Only for Play Store submission | Required for physical device testing & App Store |
+| **Post-Install Step**          | Allow "Unknown Apps" prompt    | Trust Developer Profile in Settings              |
+| **Build Host Environment**     | Managed Linux Instance         | Managed macOS Instance (Xcode)                   |
+
+---
+
+## 🚀 App Store & Google Play Submission
+
+Automate submission of compiled production binaries directly to Google Play Console and Apple App Store Connect without manual browser uploads.
+
+### Submitting Builds
 
 ```bash
+# Submit latest production Android AAB to Google Play
 eas submit --platform android
-```
 
-```bash
+# Submit latest production iOS IPA to App Store Connect / TestFlight
 eas submit --platform ios
 ```
 
-This takes your most recent production build and uploads it directly to Google Play / App Store Connect — no manual upload through a browser needed. First time through, EAS will walk you through connecting your Google Play service account / Apple credentials.
+> [!TIP]
+> **First-Time Configuration:** During initial execution, `eas submit` will prompt you to link your Google Play Service Account JSON key or Apple App Store Connect API credentials.
 
-## Quick mental model
+---
 
-| Profile       | Who it's for                       | Output                                                    |
-| ------------- | ---------------------------------- | --------------------------------------------------------- |
-| `development` | You, while coding                  | Dev client build, hot reload                              |
-| `preview`     | Testers, yourself on a real device | Installable APK (Android) / registered-device build (iOS) |
-| `production`  | The App Store / Play Store         | `.aab` / `.ipa`, ready to submit                          |
+## 🔄 OTA Updates (EAS Update)
 
-## Android vs iOS, side by side
+Publish instant JS bundle and asset updates over-the-air without requiring full App Store binary rebuilds:
 
-|                                          | Android | iOS                                       |
-| ---------------------------------------- | ------- | ----------------------------------------- |
-| Account needed to test on a real device? | No      | Yes — paid Apple Developer account        |
-| Device registration needed?              | No      | Yes — `eas device:create`, per device     |
-| Anyone can install the preview link?     | Yes     | No — only registered devices              |
-| Extra step after install?                | No      | Yes — trust developer profile in Settings |
+```bash
+# Install EAS Update library
+npx expo install expo-updates
+
+# Publish update to preview channel
+eas update --channel preview --message "Bugfix: Workout session timer state"
+
+# Publish update to production channel
+eas update --channel production --message "Release: AI coach instruction enhancement"
+```
+
+---
+
+## 💡 Troubleshooting & Best Practices
+
+> [!WARNING]
+> **Never Commit Secrets:** Store production API credentials, database strings, and secret keys in **EAS Secrets** instead of committing `.env` files:
+>
+> ```bash
+> eas secret:create --name DATABASE_URL --value "postgresql://..." --type string
+> ```
+
+### Common Solutions
+
+- **Build Failure: Out of Memory / Timeout**: Ensure native assets are optimized and dependencies match Expo SDK 57 requirements (`npx expo install --check`).
+- **iOS Install Failures**: Verify the test iPhone's UDID is listed in `eas device:list` and the Developer Profile is trusted in **Settings → General → VPN & Device Management**.
+- **Android APK Build Options**: Ensure `"buildType": "apk"` is set under the `preview` profile in `eas.json` if you desire direct APK file generation.

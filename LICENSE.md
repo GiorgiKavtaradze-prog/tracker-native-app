@@ -1,94 +1,129 @@
-# Giorgi Kavtardaze License
+# Giorgi Kavtaradze License Agreement
 
-**Copyright © 2026 Giorgi Kavtardaze. All rights reserved.**
+**Copyright © 2026 Giorgi Kavtaradze. All rights reserved.**
 
-This license governs the use, copying, modification, and distribution of the **AI Workout Tracker** software and its associated documentation (collectively, the "Software").
+This license agreement governs the use, copying, modification, distribution, and commercial licensing of the **AI Workout Tracker** software and its associated documentation (collectively, the "Software").
+
+---
+
+## 📌 Summary Matrix
+
+| Usage Scenario                       | Permitted under Free License? | Requirements / Notes                                     |
+| :----------------------------------- | :---------------------------: | :------------------------------------------------------- |
+| **Personal Learning & Study**        |            **YES**            | Free for individual code study and learning              |
+| **Developer Portfolio Display**      |            **YES**            | Permitted with original copyright & attribution retained |
+| **Local Non-Commercial Testing**     |            **YES**            | Free for local testing and experimentation               |
+| **Commercial SaaS Deployment**       |           ❌ **NO**           | Requires a paid Commercial License                       |
+| **Client / Paid Agency Work**        |           ❌ **NO**           | Requires a paid Commercial License                       |
+| **Paid Courses & Monetized Content** |           ❌ **NO**           | Requires a paid Commercial License                       |
+| **Redistribution & Reselling**       |           ❌ **NO**           | Strictly prohibited without authorization                |
 
 ---
 
 ## 1. Grant of License
 
-Subject to the terms and conditions of this license, a non-exclusive, non-transferable, revocable license is granted to use the Software as described below.
+Subject to the terms and conditions of this agreement, a non-exclusive, non-transferable, revocable license is granted to access and use the Software as specified below.
 
-### 1.1 Permitted Use (Free License)
+### 1.1 Permitted Free Use Cases
 
-The following uses are permitted **without** a paid license, provided the user complies with all other terms of this license:
+The following activities are permitted **without fee**, provided you maintain all copyright notices, disclaimers, and attribution blocks:
 
-- **Personal learning** — using the Software for the purpose of studying, understanding, and learning from its source code.
-- **Portfolio use** — displaying the Software or its source code in a personal portfolio for the purpose of demonstrating the user's skills, provided the user does not claim authorship of the Software.
-- **Non-commercial experimentation** — running and modifying the Software locally for personal, non-commercial purposes.
+1. **Personal Learning & Education**: Reading, analyzing, building, and running the Software locally for personal educational purposes.
+2. **Portfolio Demonstrations**: Displaying the Software or modified versions in a personal developer portfolio, resume, or GitHub profile to demonstrate personal technical capability.
+3. **Non-Commercial Experimentation**: Forking and modifying the codebase locally for personal, non-revenue-generating experimentation.
 
-### 1.2 Prohibited Use Without a Commercial License
+> [!NOTE]
+> **Attribution Requirement:** When displaying this project in a portfolio or public repository, you must retain the original copyright notice and acknowledge Giorgi Kavtaradze as the original creator.
 
-The following uses are **strictly prohibited** without a valid commercial license obtained from Giorgi Kavtardaze:
+### 1.2 Prohibited Use Cases (Commercial License Required)
 
-- **Commercial products** — incorporating the Software, in whole or in part, into any product or service offered for sale or for which a fee, subscription, or other compensation is charged.
-- **SaaS deployments** — offering the Software, or any derivative thereof, as a hosted, software-as-a-service, or cloud-based service to third parties.
-- **Client work** — using the Software to build applications or solutions for clients, whether for a fee or as part of a paid engagement.
-- **Paid content** — using the Software in the creation of paid courses, tutorials, templates, or other monetized content.
-- **Redistribution** — selling, sublicensing, renting, leasing, or otherwise transferring the Software, or any derivative works, to third parties for compensation.
+The following activities are **strictly prohibited** without obtaining an explicit, paid Commercial License from Giorgi Kavtaradze:
+
+- **Commercial Products & Monetization**: Incorporating the Software, in whole or in part, into any commercial product, paid application, subscription service, or monetized offering.
+- **Software-as-a-Service (SaaS)**: Hosting, deploying, or offering the Software as a cloud service, hosted API, or multi-tenant web/mobile application to end-users or third parties.
+- **Client & Freelance Deliverables**: Using the Software as a starter kit, template, or codebase to build commercial software for clients, contractors, or employer organizations.
+- **Paid Educational Content**: Incorporating the Software into paid courses, video tutorials, digital books, bootcamps, or premium templates.
+- **Sub-licensing & Redistribution**: Selling, leasing, renting, sublicensing, or distributing the source code or compiled binaries to third parties for financial gain.
 
 ---
 
 ## 2. Derivative Works
 
-You may create derivative works of the Software for the permitted uses described in Section 1.1. Any derivative work you create remains subject to the terms of this license. If you distribute a derivative work, you must:
+You may create derivative works of the Software solely for the permitted use cases outlined in **Section 1.1**. Any derivative work created from this repository remains bound by this License Agreement.
 
-1. Retain this license notice in all copies or substantial portions of the derivative work.
-2. Clearly indicate that the derivative work is based on the Software.
-3. Not imply that the derivative work is endorsed or approved by Giorgi Kavtardaze.
+When publishing or distributing any derivative work, you must:
 
----
-
-## 3. Attribution
-
-Any public display, distribution, or publication of the Software or derivative works must include the following attribution:
+1. Retain this complete `LICENSE.md` file in all copies or substantial portions of the Software.
+2. Prominently state that the work is derived from **AI Workout Tracker by Giorgi Kavtaradze**.
+3. Refrain from asserting or implying that your derivative work is endorsed, sponsored, or certified by Giorgi Kavtaradze.
 
 ---
 
-## 4. Commercial License
+## 3. Mandatory Attribution Format
 
-To use the Software for any purpose prohibited under Section 1.2, you must purchase a valid commercial license from Giorgi Kavtardaze.
+Any public repository fork, portfolio showcase, or non-commercial deployment must include the following notice in its primary `README.md` and documentation:
 
-- A commercial license grants the rights described in the license terms provided at the time of purchase.
-- A commercial license is non-transferable and applies to a single entity or individual purchaser unless otherwise stated in the license terms.
+```markdown
+Based on AI Workout Tracker by Giorgi Kavtaradze
+Original Repository: https://github.com/GiorgiKavtaradze-prog/tracker-native-app
+Copyright © 2026 Giorgi Kavtaradze. Distributed under the Techwithemma License.
+```
 
 ---
 
-## 5. Third-Party Components
+## 4. Commercial Licensing Process
 
-The Software may include or depend on third-party libraries, frameworks, and services. These third-party components remain subject to their own respective licenses and terms of use. This license does not grant any rights to third-party components beyond what their own licenses permit.
+To acquire a Commercial License for enterprise deployment, client projects, SaaS products, or commercial redistribution:
+
+> [!IMPORTANT]
+> **Commercial Inquiries:** Contact Giorgi Kavtaradze to discuss licensing tiers, multi-developer seat pricing, and commercial support agreements.
+
+- Commercial licenses apply to a specific entity, project, or domain as specified in the commercial agreement.
+- Commercial license holders receive exemption from Section 1.2 restrictions for the agreed scope of use.
+
+---
+
+## 5. Third-Party Licenses & Dependencies
+
+The Software utilizes open-source libraries, frameworks, and third-party dependencies (including React Native, Expo, Drizzle ORM, Better Auth, and NativeWind).
+
+Each third-party component remains subject to its respective open-source license (MIT, Apache 2.0, BSD, etc.). This License Agreement does not grant or alter any rights to third-party assets beyond what their native licenses permit.
 
 ---
 
 ## 6. Disclaimer of Warranty
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+> [!WARNING]
+> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ---
 
 ## 7. Limitation of Liability
 
-TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL GIORGI KAVTARDZE OR ITS AFFILIATES BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR ANY LOSS OF PROFITS OR REVENUES, WHETHER INCURRED DIRECTLY OR INDIRECTLY, OR ANY LOSS OF DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES, RESULTING FROM (i) YOUR USE OR INABILITY TO USE THE SOFTWARE; (ii) ANY UNAUTHORIZED ACCESS TO OR ALTERATION OF YOUR TRANSMISSIONS OR DATA; OR (iii) ANY OTHER MATTER RELATING TO THE SOFTWARE.
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL **GIORGI KAVTARADZE** OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE.
 
 ---
 
-## 8. Termination
+## 8. Automatic Termination
 
-This license is effective until terminated. Your rights under this license will terminate automatically without notice if you fail to comply with any term of this license. Upon termination, you must cease all use of the Software and destroy all copies, including all derivative works.
+This License Agreement terminates automatically without notice if you fail to comply with any of its terms or conditions. Upon termination, you must immediately cease all use, deployment, display, and distribution of the Software and permanently delete all copies in your possession.
 
 ---
 
 ## 9. Governing Law
 
-This license shall be governed by and construed in accordance with the laws of the jurisdiction in which Giorgi Kavtardaze is established, without regard to its conflict of law provisions.
+This agreement shall be governed by and construed in accordance with the laws of the jurisdiction in which **Giorgi Kavtaradze** resides, without regard to its conflict of law principles.
 
 ---
 
-## 10. Contact
+## 10. Licensing Contact & Inquiries
 
-For questions regarding this license or to obtain a commercial license, contact:
+For commercial licensing inquiries, custom permissions, or legal clarification, please contact:
+
+- **Copyright Owner**: Giorgi Kavtaradze
+- **GitHub Repository**: [GiorgiKavtaradze-prog/tracker-native-app](https://github.com/GiorgiKavtaradze-prog/tracker-native-app)
+- **Licensing Request**: Open an issue or discussion on the official GitHub repository marked `[Commercial Licensing]`.
 
 ---
 
-_Copyright © 2026 Giorgi Kavtardaze. All rights reserved._
+_Copyright © 2026 Giorgi Kavtaradze. All rights reserved._
