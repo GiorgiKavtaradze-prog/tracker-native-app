@@ -61,12 +61,10 @@ export default function RootLayout() {
   const scheme = colorScheme ?? "light";
   const backgroundColor = appThemeColors[scheme].background;
 
-  // UPDATE: helper method to determine the style value
   const statusBarStyle = getStatusBarStyle(pathname, scheme);
 
   const { data: session, isPending } = authClient.useSession();
 
-  // check if font is loaded properly
   const fontReady = loaded || !!error;
 
   useEffect(() => {
@@ -96,7 +94,6 @@ export default function RootLayout() {
             <Stack
               screenOptions={{
                 headerShown: false,
-                //USE: Stack controls Android; expo-status-bar above controls iOS.
                 ...(Platform.OS === "android" && { statusBarStyle }),
               }}
             >
