@@ -148,3 +148,4 @@ function IOSTabLayout() {
 export default function TabLayout() {
   return Platform.OS === "ios" ? <IOSTabLayout /> : <CustomTabLayout />;
 }
+
