@@ -1,6 +1,6 @@
 # 🏋️‍♂️ AI Workout Tracker
 
-**Production-grade, cross-platform mobile fitness companion featuring live set logging, streak analytics, full-stack Expo Router API routes, and server-side AI exercise form instructions.**
+**Production-grade, cross-platform mobile fitness companion featuring live set logging, streak analytics, full-stack Expo Router API routes, and AI-powered exercise form instructions.**
 
 [![Expo SDK 57](https://img.shields.io/badge/Expo_SDK-57-000020?style=for-the-badge&logo=expo&logoColor=white)](https://docs.expo.dev/versions/v57.0.0/)
 [![React Native 0.86](https://img.shields.io/badge/React_Native-0.86-61DAFB?style=for-the-badge&logo=react&logoColor=111827)](https://reactnative.dev/)
@@ -9,24 +9,28 @@
 [![NativeWind v4](https://img.shields.io/badge/NativeWind-v4_Tailwind-38BDF8?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://www.nativewind.dev/)
 [![PostgreSQL & Drizzle](https://img.shields.io/badge/Database-Neon_Postgres_%7C_Drizzle-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://orm.drizzle.team/)
 [![Better Auth](https://img.shields.io/badge/Auth-Better_Auth-000000?style=for-the-badge&logo=lock&logoColor=white)](https://www.better-auth.com/)
-[![License](https://img.shields.io/badge/License-Techwithemma-FF4500?style=for-the-badge)](./LICENSE.md)
+
+**🚀 [Quick Start](#quick-start--setup)** &nbsp;·&nbsp; **🔌 [API Reference](#full-stack-api-reference)** &nbsp;·&nbsp; **⚙️ [How It Works](#how-it-works)** &nbsp;·&nbsp; **🛠️ [Tech Stack](#technology-stack)** &nbsp;·&nbsp; **💾 [Database](#database-management--migrations)** &nbsp;·&nbsp; **📱 [Deploy](#native-build--eas-deployment)**
 
 ---
 
 ## 📌 Table of Contents
 
-- [✨ Overview \& Key Features](#-overview--key-features)
+- [✨ Overview \& Key Features](#overview--key-features)
 - [⚙️ How It Works](#️-how-it-works)
-- [🛠 Technology Stack](#-technology-stack)
-- [📁 Project Directory Topology](#-project-directory-topology)
-- [🔌 Full-Stack API Reference](#-full-stack-api-reference)
-- [⚡ Quick Start \& Setup](#-quick-start--setup)
-- [🔐 Environment Configuration](#-environment-configuration)
-- [💾 Database Management \& Migrations](#-database-management--migrations)
-- [📱 Native Build \& EAS Deployment](#-native-build--eas-deployment)
-- [🧪 Verification \& Code Quality](#-verification--code-quality)
-- [📄 Licensing \& Terms](#-licensing--terms)
-- [🙏 Acknowledgements](#-acknowledgements)
+- [🛠 Technology Stack](#technology-stack)
+- [📁 Project Directory Topology](#project-directory-topology)
+- [🔌 Full-Stack API Reference](#full-stack-api-reference)
+- [💻 Code Showcase](#code-showcase)
+- [⚡ Quick Start \& Setup](#quick-start--setup)
+- [🔐 Environment Configuration](#environment-configuration)
+- [💾 Database Management \& Migrations](#database-management--migrations)
+- [🗄️ Data Layer & ORM Schema](#️-data-layer--orm-schema)
+- [📱 Native Build \& EAS Deployment](#native-build--eas-deployment)
+- [📜 Available Scripts](#available-scripts)
+- [🧪 Verification \& Code Quality](#verification--code-quality)
+- [📄 Licensing \& Terms](#licensing--terms)
+- [🙏 Acknowledgements](#acknowledgements)
 
 ---
 
@@ -217,6 +221,144 @@ All backend functionality is hosted directly within the Expo app via `src/app/ap
 
 ---
 
+## 💻 Code Showcase
+
+Real-world code extracted from the production source to illustrate the architecture in action.
+
+### ⚡ Serverless API Handler — `src/app/api/workout-sessions/index+api.ts`
+
+A **Zod-validated** `+api.ts` route that persists a completed workout session and its sets atomically through Drizzle.
+
+```ts
+export async function POST(request: Request) {
+  const session = await auth.api.getSession({ headers: request.headers });
+  if (!session)
+    return Response.json({ message: "Unauthorized" }, { status: 401 });
+
+  const body = await request.json();
+  const result = sessionSchema.safeParse(body); // 🔍 Zod runtime validation
+  if (!result.success) {
+    return Response.json({ message: "Invalid payload" }, { status: 400 });
+  }
+
+  const { workoutId, startedAt, completedAt, durationSeconds, sets } =
+    result.data;
+  const sessionId = crypto.randomUUID();
+
+  // 🤝 Atomic multi-table write via Drizzle batch
+  await db.batch([
+    db.insert(workoutSessions).values({
+      id: sessionId,
+      userId: session.user.id,
+      workoutId,
+      startedAt: new Date(startedAt),
+      completedAt: new Date(completedAt),
+      durationSeconds,
+    }),
+    db.insert(workoutSessionSets).values(
+      sets.map((set) => ({
+        sessionId,
+        exerciseId: set.exerciseId,
+        setNumber: set.setNumber,
+        reps: set.reps,
+        weight: set.weight ?? null,
+      })),
+    ),
+  ]);
+
+  return Response.json(
+    { message: "Workout session created", id: sessionId },
+    { status: 201 },
+  );
+}
+```
+
+### 📱 Dashboard Client (`src/app/(app)/(tabs)/index.tsx`)
+
+The home tab combines **TanStack Query** data fetching with **NativeWind v4** utility classes for a polished, responsive design-system UI.
+
+```tsx
+const { data: stats, isPending } = useQuery({
+  queryKey: ["home-stats", selectedDate],
+  queryFn: () => getHomeStatsQueryFn(selectedDate),
+});
+
+return (
+  <SafeAreaScreen edges={["top", "bottom"]}>
+    <ScrollView className="flex-1" contentContainerClassName="px-5 pb-5 pt-2">
+      <View className="flex-row items-center justify-between">
+        <View className="flex-row items-center gap-0">
+          <View className="-ml-4 h-11 w-16 overflow-hidden">
+            <Image className="h-full w-full" resizeMode="cover" source={logo} />
+          </View>
+          <Text
+            accessibilityRole="header"
+            className="font-inter-bold text-[22px] text-foreground"
+          >
+            MyWorkout
+          </Text>
+        </View>
+        <Pressable
+          className="h-11 flex-row items-center rounded-full border border-border bg-card px-3 active:bg-muted"
+          onPress={showStreak}
+        >
+          <Text className="ml-1.5 mr-0.5 font-inter-bold text-[14px] text-foreground">
+            {currentStreak || 0}
+          </Text>
+        </Pressable>
+      </View>
+    </ScrollView>
+  </SafeAreaScreen>
+);
+```
+
+### 🤖 AI Exercise Coach (`src/app/api/exercises/[id]/instructions+api.ts`)
+
+A serverless route that streams structured form cues from the **Vercel AI SDK** with a typed **Zod output schema** and a graceful fallback.
+
+```ts
+const instructionsOutputSchema = z.object({
+  instructions: z
+    .array(z.string())
+    .min(1)
+    .describe("Step-by-step form instructions"),
+});
+
+export async function GET(request: Request, { id }: Record<string, string>) {
+  const session = await auth.api.getSession({ headers: request.headers });
+  if (!session)
+    return Response.json({ message: "Unauthorized" }, { status: 401 });
+
+  const [exercise] = await db
+    .select()
+    .from(exercises)
+    .where(eq(exercises.id, id))
+    .limit(1);
+  if (!exercise)
+    return Response.json({ message: "Exercise not found" }, { status: 404 });
+
+  try {
+    const { output } = await generateText({
+      model: "google/gemini-2.5-flash",
+      output: Output.object({ schema: instructionsOutputSchema }),
+      system: "You are an expert AI fitness coach...",
+      prompt: `Exercise: ${exercise.name}\nTarget Muscles: ${exercise.muscles}`,
+    });
+    if (output?.instructions?.length)
+      return Response.json({ instructions: output.instructions });
+  } catch {
+    // 🤖 Graceful AI fallback
+  }
+
+  return Response.json({ instructions: [] });
+}
+```
+
+> [!TIP]
+> Every server route follows the same rigorous pipeline — **Better Auth** session guard → **Zod** schema validation → **Drizzle ORM** persistence → typed JSON response.
+
+---
+
 ## ⚡ Quick Start & Setup
 
 ### Prerequisites
@@ -315,6 +457,73 @@ npm run db:studio
 
 ---
 
+## 🗄️ Data Layer & ORM Schema
+
+The relational model is defined with **Drizzle ORM** and stored on **Neon PostgreSQL** — fully typed from database to UI.
+
+### 📦 Core Entities
+
+| Entity               | Table                  | Purpose                                         |
+| :------------------- | :--------------------- | :---------------------------------------------- |
+| `profiles`           | `profiles`             | User attributes (goal, experience, weight unit) |
+| `workouts`           | `workouts`             | Customizable routine templates                  |
+| `exercises`          | `exercises`            | Searchable exercise catalog with target muscles |
+| `workoutExercises`   | `workout_exercises`    | Join table linking routines to exercises        |
+| `workoutSessions`    | `workout_sessions`     | Completed training sessions & timestamps        |
+| `workoutSessionSets` | `workout_session_sets` | Per-exercise sets, reps & weight per session    |
+
+### 🧱 Example Schema — `src/db/schema.ts`
+
+```ts
+import {
+  boolean,
+  integer,
+  pgTable,
+  real,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
+import { user } from "./auth-schema";
+
+export const workouts = pgTable("workouts", {
+  id: uuid().defaultRandom().primaryKey(),
+  userId: text()
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  name: text().notNull(),
+  description: text(),
+  image: text(),
+  isTemplate: boolean().notNull().default(false),
+  createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp({ withTimezone: true })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
+export const workoutSessions = pgTable("workout_sessions", {
+  id: uuid().defaultRandom().primaryKey(),
+  userId: text()
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  workoutId: uuid()
+    .notNull()
+    .references(() => workouts.id, { onDelete: "cascade" }),
+  startedAt: timestamp({ withTimezone: true }).notNull(),
+  completedAt: timestamp({ withTimezone: true }).notNull(),
+  durationSeconds: integer().notNull(),
+});
+
+export type Workout = typeof workouts.$inferSelect;
+export type WorkoutSession = typeof workoutSessions.$inferSelect;
+```
+
+> [!NOTE]
+> Every schema export is fully inferred with **TypeScript-only categories** (`$inferSelect` / `$inferInsert`), eliminating manual DTO boilerplate across the entire codebase.
+
+---
+
 ## 📱 Native Build & EAS Deployment
 
 The app includes ready-to-use profiles in `eas.json` for building native iOS `.ipa` and Android `.apk` / `.aab` packages.
@@ -359,7 +568,32 @@ npm run lint
 
 # Type check TypeScript codebase
 npx tsc --noEmit
+
+# Validate project health against the Expo SDK 57 checklist
+npx expo-doctor
 ```
+
+---
+
+## 📜 Available Scripts
+
+The project ships with a focused set of `npm` scripts to cover the full development, database, and verification workflow.
+
+| Script                | Implementation             | Description                                    |
+| :-------------------- | :------------------------- | :--------------------------------------------- |
+| `npm run start`       | `expo start`               | Launch the Expo dev server                     |
+| `npm run android`     | `expo run:android`         | Build & run the native Android app             |
+| `npm run ios`         | `expo run:ios`             | Build & run the native iOS app                 |
+| `npm run web`         | `expo start --web`         | Launch the Web target                          |
+| `npm run lint`        | `expo lint`                | Run ESLint & Expo static analysis              |
+| `npm run db:generate` | `drizzle-kit generate`     | Generate SQL migrations from schema changes    |
+| `npm run db:migrate`  | `drizzle-kit migrate`      | Apply pending SQL migrations                   |
+| `npm run db:push`     | `drizzle-kit push`         | Push schema directly to the DB (dev iteration) |
+| `npm run db:seed`     | `tsx src/db/seed/index.ts` | Seed the default exercise catalog              |
+| `npm run db:studio`   | `drizzle-kit studio`       | Open the Drizzle Studio visual browser         |
+
+> [!NOTE]
+> Run `npx tsc --noEmit` / `npx expo-doctor` ad-hoc for strict type-checking and Expo SDK 57 project health validation.
 
 ---
 
