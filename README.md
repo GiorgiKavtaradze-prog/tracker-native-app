@@ -1,5 +1,3 @@
-<img src="assets/images/icon.png" alt="AI Workout Tracker Logo" width="128" height="128" />
-
 # 🏋️‍♂️ AI Workout Tracker
 
 **Production-grade, cross-platform mobile fitness companion featuring live set logging, streak analytics, full-stack Expo Router API routes, and server-side AI exercise form instructions.**
