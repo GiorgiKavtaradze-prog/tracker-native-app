@@ -2,49 +2,30 @@ import Button from "@/components/ui/button";
 import { useAppThemeColor } from "@/theme/app-theme";
 import { Feather } from "@expo/vector-icons";
 import { Link } from "expo-router";
-import {
-  Image,
-  ImageBackground,
-  Pressable,
-  ScrollView,
-  // StatusBar,
-  Text,
-  View,
-} from "react-native";
+import { ImageBackground, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const bgImg = require("../../../assets/images/app-images/welcome-background.png");
-const logo = require("../../../assets/images/app-images/logo.png");
-const mockup = require("../../../assets/images/app-images/app-mockup.png");
+
+const onboardingHref = {
+  pathname: "/onboarding/[step]",
+  params: { step: "gender" },
+} as const;
 
 const Welcome = () => {
   const primaryForeground = useAppThemeColor("primaryForeground");
 
-  // Removed: <-- please check the (root layout) --->
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     const entry = StatusBar.pushStackEntry({
-  //       backgroundColor: "#020817",
-  //       barStyle: "light-content",
-  //       translucent: false,
-  //     });
-  //
-  //     return () => StatusBar.popStackEntry(entry);
-  //   }, []),
-  // );
-
   return (
-    <ImageBackground className="flex-1" resizeMode="cover" source={bgImg}>
+    <ImageBackground
+      className="relative flex-1 overflow-hidden"
+      resizeMode="stretch"
+      source={bgImg}
+      accessibilityIgnoresInvertColors
+    >
       <View className="absolute inset-0 bg-black/20" />
       <SafeAreaView className="flex-1" edges={["top", "bottom"]}>
-        <ScrollView
-          contentContainerClassName="flex-grow px-5 pb-4 pt-2"
-          showsVerticalScrollIndicator={false}
-        >
-          <View className="items-center">
-            <View className="h-20 w-36 overflow-hidden">
-              <Image className="size-full" resizeMode="cover" source={logo} />
-            </View>
+        <View className="flex-1 px-5 pb-4 pt-2">
+          <View className="items-center mt-32">
             <Text className="-mt-2 font-inter-bold text-[30px] tracking-[-0.8px] text-white">
               MyWorkout
             </Text>
@@ -53,13 +34,7 @@ const Welcome = () => {
             </Text>
           </View>
 
-          <View className="relative -mt-2 h-[300px] flex-grow items-center overflow-hidden">
-            <Image
-              className="absolute inset-0 size-full scale-110"
-              resizeMode="contain"
-              source={mockup}
-            />
-          </View>
+          <View className="flex-grow items-center overflow-hidden" />
 
           <View className="items-center">
             <Text className="text-center font-inter-bold text-[30px] leading-9 tracking-[-0.8px] text-white">
@@ -70,13 +45,7 @@ const Welcome = () => {
             </Text>
           </View>
 
-          <Link
-            href={{
-              pathname: "/onboarding/[step]",
-              params: { step: "gender" },
-            }}
-            asChild
-          >
+          <Link href={onboardingHref} asChild>
             <Button
               className="mt-6"
               rightIcon={
@@ -98,14 +67,17 @@ const Welcome = () => {
               Already have an account?{" "}
             </Text>
             <Link href="/sign-in" asChild>
-              <Pressable className="min-h-11 justify-center px-1">
+              <Pressable
+                accessibilityRole="link"
+                className="min-h-11 justify-center px-1"
+              >
                 <Text className="font-inter-semibold text-[13px] text-primary">
                   Sign In
                 </Text>
               </Pressable>
             </Link>
           </View>
-        </ScrollView>
+        </View>
       </SafeAreaView>
     </ImageBackground>
   );

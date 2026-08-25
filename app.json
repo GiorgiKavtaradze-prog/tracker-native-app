@@ -14,7 +14,6 @@
         "usesNonExemptEncryption": false
       }
     },
-
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#ffffff",
@@ -47,7 +46,8 @@
           "photosPermission": "Allow MyWorkout Tracker to access your photos so you can choose a workout cover.",
           "microphonePermission": false
         }
-      ]
+      ],
+      "expo-image"
     ],
     "experiments": {
       "typedRoutes": true,
